@@ -77,10 +77,6 @@ class VirtualPlane: SCNNode {
         let width = Float(self.planeGeometry.width)
         let height = Float(self.planeGeometry.height)
         material.diffuse.contentsTransform = SCNMatrix4MakeScale(width, height, 1.0)
-        
-        // apply repeat pattern if necessary (only interesting for images)
-        //material.diffuse.wrapS = .repeat
-        //material.diffuse.wrapT = .repeat
     }
     
     required init?(coder aDecoder: NSCoder) {

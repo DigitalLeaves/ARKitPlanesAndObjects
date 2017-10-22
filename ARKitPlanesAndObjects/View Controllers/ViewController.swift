@@ -11,8 +11,11 @@ import SceneKit
 import ARKit
 
 class ViewController: UIViewController, ARSCNViewDelegate {
-
+    // outlets
     @IBOutlet var sceneView: ARSCNView!
+    
+    // data
+    var planes = [SCNPlane]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,8 +26,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
         
+        // debug scene to see feature points and world's origin
+        self.sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
+        
         // Create a new scene
-        let scene = SCNScene(named: "art.scnassets/ship.scn")!
+        let scene = SCNScene()
         
         // Set the scene to the view
         sceneView.scene = scene
@@ -34,7 +40,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         super.viewWillAppear(animated)
         
         // Create a session configuration
-        let configuration = ARWorldTrackingSessionConfiguration()
+        let configuration = ARWorldTrackingConfiguration()
+        configuration.planeDetection = .horizontal
         
         // Run the view's session
         sceneView.session.run(configuration)
@@ -62,6 +69,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         return node
     }
 */
+    
+    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+        // create a 3d plane from the anchor
+        self.plane
+    }
     
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user

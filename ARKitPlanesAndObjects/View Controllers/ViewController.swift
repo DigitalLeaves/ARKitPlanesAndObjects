@@ -14,8 +14,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     // outlets
     @IBOutlet var sceneView: ARSCNView!
     
-    // data
-    var planes = [SCNPlane]()
+    // Planes: every plane is identified by a UUID.
+    var planes = [UUID: VirtualPlane]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,7 +72,23 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         // create a 3d plane from the anchor
-        self.plane
+        if let arPlaneAnchor = anchor as? ARPlaneAnchor {
+            let plane = VirtualPlane(anchor: arPlaneAnchor)
+            self.planes[arPlaneAnchor.identifier] = plane
+            node.addChildNode(plane)
+        }
+    }
+    
+    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
+        if let arPlaneAnchor = anchor as? ARPlaneAnchor, let plane = planes[arPlaneAnchor.identifier] {
+            plane.updateWithNewAnchor(arPlaneAnchor)
+        }
+    }
+    
+    func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
+        if let arPlaneAnchor = anchor as? ARPlaneAnchor, let index = planes.index(forKey: arPlaneAnchor.identifier) {
+            planes.remove(at: index)
+        }
     }
     
     func session(_ session: ARSession, didFailWithError error: Error) {
